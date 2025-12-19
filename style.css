@@ -1,0 +1,82 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #0f0f0f;
+  color: #00ffcc;
+  padding: 20px;
+  margin: 0;
+}
+.header {
+  text-align: center;
+  border-bottom: 2px solid #00ffcc;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 1200px;
+  margin: auto;
+}
+.panel {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
+}
+
+/* Motor Controls */
+.motor-grid {
+  display: grid;
+  grid-template-areas: ". up ." "left stop right" ". down .";
+  gap: 10px;
+  justify-content: center;
+}
+.btn {
+  background: #222;
+  color: #00ffcc;
+  border: 1px solid #00ffcc;
+  padding: 15px 25px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.btn:active,
+.active-btn {
+  background: #00ffcc;
+  color: #000;
+}
+
+/* Joystick Area */
+#joy-container {
+  width: 100%;
+  height: 250px;
+  background: #111;
+  border-radius: 10px;
+  position: relative;
+  border: 1px dashed #444;
+}
+
+/* Console & Input */
+#console {
+  height: 150px;
+  overflow-y: auto;
+  background: #000;
+  padding: 10px;
+  font-size: 12px;
+  color: #aaa;
+  border: 1px solid #333;
+  margin-top: 10px;
+}
+input {
+  background: #000;
+  color: #00ffcc;
+  border: 1px solid #444;
+  padding: 10px;
+  width: 70%;
+  border-radius: 5px;
+}
+.status-bar {
+  margin-bottom: 15px;
+  font-size: 0.9em;
+}
