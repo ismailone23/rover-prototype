@@ -1,88 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Mars Rover Mission Control</title>
-    <script defer src="index.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.1/nipplejs.min.js"></script>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="header">
-      <h1>MARS ROVER v1.0 - CONTROL INTERFACE</h1>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoRa vehicle Control</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css">
+  <script defer src="index.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="control-panel">
+      <h2>Control Center</h2>
+
+      <div class="status-panel">
+        <div class="stat-box">Temp<br><b id="temp">--</b>°C</div>
+        <div class="stat-box">Humid<br><b id="humid">--</b>%</div>
+        <div class="stat-box">Dist<br><b id="dist">--</b>cm</div>
+      </div>
+
+      <div class="gps-info">
+        <div class="gps-box">
+          Latitude<br><b id="latitude">--</b>
+        </div>
+        <div class="gps-box">
+          Longitude<br><b id="longitude">--</b>
+        </div>
+        <div class="gps-box">
+          Heading<br><b id="heading">--</b>°
+        </div>
+        <div class="gps-box">
+          Auto Mode<br><b id="autoStatus">
+            <span class="status-indicator inactive"></span>OFF
+          </b>
+        </div>
+      </div>
+
+      <button id="connectBtn" onclick="connectSerial()">🔌 Connect USB</button>
+
+      <div class="controls-grid">
+        <div></div>
+        <button class="btn" onmousedown="startMove('w')" onmouseup="stopMove()" ontouchstart="startMove('w')"
+          ontouchend="stopMove()">▲</button>
+        <div></div>
+        <button class="btn" onmousedown="startMove('a')" onmouseup="stopMove()" ontouchstart="startMove('a')"
+          ontouchend="stopMove()">◄</button>
+        <button class="btn stop" onclick="sendJson({cmd: 'x'})">■</button>
+        <button class="btn" onmousedown="startMove('d')" onmouseup="stopMove()" ontouchstart="startMove('d')"
+          ontouchend="stopMove()">►</button>
+        <div></div>
+        <button class="btn" onmousedown="startMove('s')" onmouseup="stopMove()" ontouchstart="startMove('s')"
+          ontouchend="stopMove()">▼</button>
+        <div></div>
+      </div>
+
+      <div class="slider-group">
+        <label>Speed: <span id="speedVal">75</span>%</label>
+        <input type="range" min="0" max="100" value="75" oninput="updateSpeed(this.value)">
+      </div>
+
+      <div class="steering-control">
+        <label>🎮 Steering Control: <span id="s1Val">90</span>°</label>
+        <div class="steering-wheel-container">
+          <svg id="steeringWheel" width="200" height="200" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="80" fill="none" stroke="#667eea" stroke-width="8" />
+            <circle cx="100" cy="100" r="20" fill="#764ba2" />
+            <line x1="100" y1="20" x2="100" y2="80" stroke="#667eea" stroke-width="4" transform="rotate(0 100 100)"
+              id="spoke1" />
+            <line x1="100" y1="20" x2="100" y2="80" stroke="#667eea" stroke-width="4" transform="rotate(90 100 100)" />
+            <line x1="100" y1="20" x2="100" y2="80" stroke="#667eea" stroke-width="4" transform="rotate(180 100 100)" />
+            <line x1="100" y1="20" x2="100" y2="80" stroke="#667eea" stroke-width="4" transform="rotate(270 100 100)" />
+            <polygon points="100,15 95,25 105,25" fill="#f5576c" id="indicator" />
+          </svg>
+          <div class="steering-buttons">
+            <button class="steer-btn" onclick="steerLeft()">◄ LEFT</button>
+            <button class="steer-btn center" onclick="steerCenter()">● CENTER</button>
+            <button class="steer-btn" onclick="steerRight()">RIGHT ►</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="auto-control">
+        <h3>🎯 Auto-Drive Navigation</h3>
+        <input type="number" id="targetLat" placeholder="Target Latitude" step="0.000001">
+        <input type="number" id="targetLon" placeholder="Target Longitude" step="0.000001">
+        <div class="flex">
+          <button id="startAutoBtn" onclick="startAutoDrive()">▶ Start Auto</button>
+          <button id="stopAutoBtn" onclick="stopAutoDrive()">⏹ Stop Auto</button>
+        </div>
+      </div>
     </div>
 
-    <div class="grid">
-      <div class="panel">
-        <h3>Drive System (N20 Motors)</h3>
-        <p>Use Buttons or Keys: <b>W, A, S, D</b> | Stop: <b>Space</b></p>
-        <div class="motor-grid">
-          <button
-            class="btn"
-            style="grid-area: up"
-            id="btn-W"
-            onclick="sendCommand('MOVE_F')"
-          >
-            FORWARD (W)
-          </button>
-          <button
-            class="btn"
-            style="grid-area: left"
-            id="btn-A"
-            onclick="sendCommand('MOVE_L')"
-          >
-            LEFT (A)
-          </button>
-          <button
-            class="btn"
-            style="grid-area: stop"
-            id="btn-Space"
-            onclick="sendCommand('STOP')"
-          >
-            STOP (Space)
-          </button>
-          <button
-            class="btn"
-            style="grid-area: right"
-            id="btn-D"
-            onclick="sendCommand('MOVE_R')"
-          >
-            RIGHT (D)
-          </button>
-          <button
-            class="btn"
-            style="grid-area: down"
-            id="btn-S"
-            onclick="sendCommand('MOVE_S')"
-          >
-            BACK (S)
-          </button>
-        </div>
+    <div class="map-panel">
+      <h2>📍 Live Location Map (OpenStreetMap)</h2>
+      <div id="map"></div>
+      <div class="map-controls">
+        <button onclick="centerOnvehicle()">📍 Center on vehicle</button>
+        <button onclick="setDestinationFromMap()">🎯 Set Destination</button>
+        <button onclick="clearPath()">🗑️ Clear Path</button>
+        <button onclick="toggleSatellite()">🛰️ Toggle Satellite</button>
       </div>
-
-      <div class="panel">
-        <h3>Axle Steering (MG90S Servos)</h3>
-        <p>Move joystick to rotate wheel orientation</p>
-        <div id="joy-container"></div>
-      </div>
-
-      <div class="panel" style="grid-column: span 2">
-        <div class="status-bar">
-          Serial Status:
-          <span id="status" style="color: red">Disconnected</span> |
-          <button onclick="connectSerial()">Connect to Pico Gateway</button>
-        </div>
-        <div style="display: flex; gap: 10px">
-          <input
-            type="text"
-            id="gpsInput"
-            placeholder="Enter Target Coordinates (Lat, Long)"
-          />
-          <button class="btn" onclick="sendGPS()" style="padding: 5px 15px">
-            Send GPS Command
-          </button>
-        </div>
-        <div id="console">--- Awaiting System Telemetry ---</div>
-      </div>
+      <div id="log"></div>
     </div>
-  </body>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+</body>
+
 </html>
