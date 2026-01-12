@@ -169,63 +169,6 @@ h2 {
   cursor: pointer;
 }
 
-.steering-control {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.steering-control label {
-  display: block;
-  margin-bottom: 15px;
-  color: #333;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.steering-wheel-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-}
-
-#steeringWheel {
-  transition: transform 0.3s ease;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-}
-
-.steering-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-  width: 100%;
-}
-
-.steer-btn {
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  font-weight: bold;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.steer-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.steer-btn:active {
-  transform: scale(0.95);
-}
-
-.steer-btn.center {
-  background: linear-gradient(135deg, #34a853 0%, #28a745 100%);
-}
-
 .auto-control {
   background: #fff3cd;
   padding: 15px;
